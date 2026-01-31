@@ -1,2 +1,967 @@
 # Meu-trampo-Brasil
 Para profissionais e empresa se conectar, acesso fácil e rápido.
+
+import { useState } from "react";
+import "@/App.css";
+import { BrowserRouter, Routes, Route, Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Phone, Briefcase, Users, Star, Check, Menu, X, MapPin, Mail, Clock, Send, Building2, User, Search, Filter, ChevronRight, Heart, Share2, MessageCircle } from "lucide-react";
+
+const PHONE_NUMBER = "+55 11 93074-3601";
+const PHONE_WHATSAPP = "5511930743601";
+
+// Header Component
+const Header = ({ isMenuOpen, setIsMenuOpen }) => {
+  return (
+    <header className="fixed top-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md z-50 border-b border-emerald-500/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link to="/" className="flex items-center gap-2">
+            <Briefcase className="h-8 w-8 text-emerald-400" />
+            <span className="text-xl font-bold text-white">Meu Trampo</span>
+            <span className="text-emerald-400 text-sm font-medium">Brasil</span>
+          </Link>
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
+            <Link to="/" className="text-gray-300 hover:text-emerald-400 transition-colors">Início</Link>
+            <Link to="/vagas" className="text-gray-300 hover:text-emerald-400 transition-colors">Vagas</Link>
+            <Link to="/empresas" className="text-gray-300 hover:text-emerald-400 transition-colors">Empresas</Link>
+            <Link to="/contato" className="text-gray-300 hover:text-emerald-400 transition-colors">Contato</Link>
+            <a href={`tel:${PHONE_NUMBER}`} className="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors" data-testid="header-phone">
+              <Phone className="h-4 w-4" />
+              <span className="text-sm font-medium">{PHONE_NUMBER}</span>
+            </a>
+          </nav>
+
+          <div className="hidden md:flex items-center gap-4">
+            <Link to="/login" className="text-gray-300 hover:text-white transition-colors" data-testid="login-btn">Entrar</Link>
+            <Link to="/register" className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-full font-medium transition-colors" data-testid="register-btn">
+              Cadastre-se
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden text-white p-2"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            data-testid="mobile-menu-btn"
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-emerald-500/20">
+            <nav className="flex flex-col gap-4">
+              <Link to="/" className="text-gray-300 hover:text-emerald-400 transition-colors">Início</Link>
+              <Link to="/vagas" className="text-gray-300 hover:text-emerald-400 transition-colors">Vagas</Link>
+              <Link to="/empresas" className="text-gray-300 hover:text-emerald-400 transition-colors">Empresas</Link>
+              <Link to="/contato" className="text-gray-300 hover:text-emerald-400 transition-colors">Contato</Link>
+              <a href={`tel:${PHONE_NUMBER}`} className="flex items-center gap-2 text-emerald-400" data-testid="mobile-phone">
+                <Phone className="h-4 w-4" />
+                <span>{PHONE_NUMBER}</span>
+              </a>
+              <div className="flex gap-4 pt-4 border-t border-emerald-500/20">
+                <Link to="/login" className="text-gray-300 hover:text-white transition-colors">Entrar</Link>
+                <Link to="/register" className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-full font-medium transition-colors">
+                  Cadastre-se
+                </Link>
+              </div>
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+};
+
+// Footer Component
+const Footer = () => {
+  return (
+    <footer className="bg-slate-900 border-t border-emerald-500/20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Briefcase className="h-8 w-8 text-emerald-400" />
+              <span className="text-xl font-bold text-white">Meu Trampo</span>
+              <span className="text-emerald-400 text-sm font-medium">Brasil</span>
+            </div>
+            <p className="text-gray-400 mb-4">
+              A plataforma inteligente que conecta talentos brasileiros às melhores oportunidades de trabalho.
+            </p>
+            <div className="flex flex-col gap-2">
+              <a href={`tel:${PHONE_NUMBER}`} className="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors" data-testid="footer-phone">
+                <Phone className="h-5 w-5" />
+                <span className="font-medium">{PHONE_NUMBER}</span>
+              </a>
+              <a href={`https://wa.me/${PHONE_WHATSAPP}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors" data-testid="footer-whatsapp">
+                <MessageCircle className="h-5 w-5" />
+                <span>WhatsApp: {PHONE_NUMBER}</span>
+              </a>
+              <a href="mailto:contato@meutrampo.com.br" className="flex items-center gap-2 text-gray-400 hover:text-emerald-400 transition-colors">
+                <Mail className="h-5 w-5" />
+                <span>contato@meutrampo.com.br</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Links */}
+          <div>
+            <h3 className="text-white font-semibold mb-4">Para Candidatos</h3>
+            <ul className="space-y-2">
+              <li><Link to="/vagas" className="text-gray-400 hover:text-emerald-400 transition-colors">Buscar Vagas</Link></li>
+              <li><Link to="/register?type=candidate" className="text-gray-400 hover:text-emerald-400 transition-colors">Criar Currículo</Link></li>
+              <li><Link to="/premium" className="text-gray-400 hover:text-emerald-400 transition-colors">Planos Premium</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-white font-semibold mb-4">Para Empresas</h3>
+            <ul className="space-y-2">
+              <li><Link to="/register?type=company" className="text-gray-400 hover:text-emerald-400 transition-colors">Publicar Vagas</Link></li>
+              <li><Link to="/empresas" className="text-gray-400 hover:text-emerald-400 transition-colors">Buscar Talentos</Link></li>
+              <li><Link to="/contato" className="text-gray-400 hover:text-emerald-400 transition-colors">Fale Conosco</Link></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-emerald-500/20 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-400 text-sm">
+            © 2024 Meu Trampo Brasil. Todos os direitos reservados.
+          </p>
+          <div className="flex items-center gap-2 text-gray-400 text-sm">
+            <Phone className="h-4 w-4 text-emerald-400" />
+            <span>Atendimento: {PHONE_NUMBER}</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+// WhatsApp Floating Button
+const WhatsAppButton = () => {
+  return (
+    <a
+      href={`https://wa.me/${PHONE_WHATSAPP}?text=Olá! Vim pelo site Meu Trampo Brasil e gostaria de mais informações.`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all z-50 group"
+      data-testid="whatsapp-float-btn"
+    >
+      <MessageCircle className="h-6 w-6" />
+      <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+        Fale conosco: {PHONE_NUMBER}
+      </span>
+    </a>
+  );
+};
+
+// Home Page
+const Home = () => {
+  const navigate = useNavigate();
+
+  const featuredJobs = [
+    { id: 1, title: "Desenvolvedor Full Stack", company: "Tech Solutions", location: "São Paulo, SP", salary: "R$ 8.000 - R$ 12.000", type: "CLT", posted: "2 dias atrás" },
+    { id: 2, title: "Designer UX/UI", company: "Creative Agency", location: "Rio de Janeiro, RJ", salary: "R$ 6.000 - R$ 9.000", type: "PJ", posted: "1 dia atrás" },
+    { id: 3, title: "Analista de Marketing", company: "E-commerce Brasil", location: "Remoto", salary: "R$ 5.000 - R$ 7.000", type: "CLT", posted: "3 dias atrás" },
+    { id: 4, title: "Gerente de Projetos", company: "Consultoria ABC", location: "Belo Horizonte, MG", salary: "R$ 10.000 - R$ 15.000", type: "CLT", posted: "5 horas atrás" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-slate-950">
+      {/* Hero Section */}
+      <section className="pt-24 pb-16 px-4 bg-gradient-to-br from-slate-900 via-slate-950 to-emerald-950">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                Encontre o <span className="text-emerald-400">Trampo Ideal</span> para Você
+              </h1>
+              <p className="text-xl text-gray-300 mb-8">
+                A plataforma inteligente que conecta talentos brasileiros às melhores oportunidades de trabalho
+              </p>
+              
+              {/* Search Bar */}
+              <div className="bg-slate-800/50 backdrop-blur-sm p-2 rounded-2xl border border-emerald-500/20 mb-6">
+                <div className="flex flex-col md:flex-row gap-2">
+                  <div className="flex-1 flex items-center gap-2 bg-slate-900 rounded-xl px-4 py-3">
+                    <Search className="h-5 w-5 text-gray-400" />
+                    <input 
+                      type="text" 
+                      placeholder="Cargo, empresa ou palavra-chave"
+                      className="bg-transparent text-white placeholder-gray-400 outline-none w-full"
+                      data-testid="search-input"
+                    />
+                  </div>
+                  <div className="flex-1 flex items-center gap-2 bg-slate-900 rounded-xl px-4 py-3">
+                    <MapPin className="h-5 w-5 text-gray-400" />
+                    <input 
+                      type="text" 
+                      placeholder="Cidade ou estado"
+                      className="bg-transparent text-white placeholder-gray-400 outline-none w-full"
+                      data-testid="location-input"
+                    />
+                  </div>
+                  <button 
+                    onClick={() => navigate('/vagas')}
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-semibold transition-colors"
+                    data-testid="search-btn"
+                  >
+                    Buscar
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <button 
+                  onClick={() => navigate('/register?type=candidate')}
+                  className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold transition-colors flex items-center gap-2"
+                  data-testid="candidate-register-btn"
+                >
+                  <User className="h-5 w-5" />
+                  Buscar Vagas
+                </button>
+                <button 
+                  onClick={() => navigate('/register?type=company')}
+                  className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-full font-semibold transition-colors border border-emerald-500/30 flex items-center gap-2"
+                  data-testid="company-register-btn"
+                >
+                  <Building2 className="h-5 w-5" />
+                  Publicar Vagas
+                </button>
+              </div>
+
+              {/* Contact Info */}
+              <div className="mt-8 p-4 bg-slate-800/30 rounded-xl border border-emerald-500/20">
+                <p className="text-gray-400 text-sm mb-2">Precisa de ajuda? Fale conosco:</p>
+                <a href={`tel:${PHONE_NUMBER}`} className="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-medium" data-testid="hero-phone">
+                  <Phone className="h-5 w-5" />
+                  {PHONE_NUMBER}
+                </a>
+              </div>
+            </div>
+
+            <div className="hidden md:block">
+              <img 
+                src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&h=500&fit=crop"
+                alt="Profissionais trabalhando"
+                className="rounded-2xl shadow-2xl border border-emerald-500/20"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-12 bg-slate-900 border-y border-emerald-500/20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-emerald-400 mb-2">5.000+</div>
+              <div className="text-gray-400">Vagas Ativas</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-emerald-400 mb-2">10.000+</div>
+              <div className="text-gray-400">Candidatos</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-emerald-400 mb-2">500+</div>
+              <div className="text-gray-400">Empresas</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-emerald-400 mb-2">95%</div>
+              <div className="text-gray-400">Satisfação</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
+            Por que escolher o <span className="text-emerald-400">Meu Trampo</span>?
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-slate-900 p-8 rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition-colors">
+              <div className="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6">
+                <Briefcase className="h-7 w-7 text-emerald-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Milhares de Vagas</h3>
+              <p className="text-gray-400">Acesse oportunidades em todas as áreas e níveis de experiência em todo o Brasil.</p>
+            </div>
+
+            <div className="bg-slate-900 p-8 rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition-colors">
+              <div className="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6">
+                <Star className="h-7 w-7 text-emerald-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Match Inteligente</h3>
+              <p className="text-gray-400">Algoritmos que conectam você às vagas perfeitas para seu perfil profissional.</p>
+            </div>
+
+            <div className="bg-slate-900 p-8 rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition-colors">
+              <div className="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6">
+                <Users className="h-7 w-7 text-emerald-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Suporte Dedicado</h3>
+              <p className="text-gray-400">Equipe pronta para ajudar. Ligue: <a href={`tel:${PHONE_NUMBER}`} className="text-emerald-400">{PHONE_NUMBER}</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Jobs */}
+      <section className="py-16 px-4 bg-slate-900/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold text-white">Vagas em Destaque</h2>
+            <Link to="/vagas" className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
+              Ver todas <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {featuredJobs.map(job => (
+              <div key={job.id} className="bg-slate-900 p-6 rounded-xl border border-emerald-500/20 hover:border-emerald-500/40 transition-all hover:shadow-lg hover:shadow-emerald-500/10">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-1">{job.title}</h3>
+                    <p className="text-emerald-400">{job.company}</p>
+                  </div>
+                  <button className="text-gray-400 hover:text-red-400 transition-colors">
+                    <Heart className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-4 text-sm text-gray-400 mb-4">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" /> {job.location}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Briefcase className="h-4 w-4" /> {job.type}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" /> {job.posted}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-emerald-400 font-semibold">{job.salary}</span>
+                  <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                    Ver detalhes
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Pronto para encontrar seu próximo <span className="text-emerald-400">trampo</span>?
+          </h2>
+          <p className="text-xl text-gray-400 mb-8">
+            Cadastre-se gratuitamente e tenha acesso a milhares de oportunidades
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={() => navigate('/register?type=candidate')}
+              className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-full font-semibold text-lg transition-colors"
+            >
+              Criar Conta Grátis
+            </button>
+            <a 
+              href={`tel:${PHONE_NUMBER}`}
+              className="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-colors border border-emerald-500/30 flex items-center justify-center gap-2"
+            >
+              <Phone className="h-5 w-5" />
+              {PHONE_NUMBER}
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+// Vagas Page
+const Vagas = () => {
+  const [searchParams] = useSearchParams();
+  const locationFilter = searchParams.get('location') || '';
+  
+  const allJobs = [
+    { id: 1, title: "Desenvolvedor Full Stack", company: "Tech Solutions", location: "São Paulo, SP", salary: "R$ 8.000 - R$ 12.000", type: "CLT", posted: "2 dias atrás", description: "Desenvolvimento de aplicações web e mobile..." },
+    { id: 2, title: "Designer UX/UI", company: "Creative Agency", location: "Rio de Janeiro, RJ", salary: "R$ 6.000 - R$ 9.000", type: "PJ", posted: "1 dia atrás", description: "Criação de interfaces e experiências digitais..." },
+    { id: 3, title: "Analista de Marketing", company: "E-commerce Brasil", location: "Remoto", salary: "R$ 5.000 - R$ 7.000", type: "CLT", posted: "3 dias atrás", description: "Gestão de campanhas digitais e redes sociais..." },
+    { id: 4, title: "Gerente de Projetos", company: "Consultoria ABC", location: "Belo Horizonte, MG", salary: "R$ 10.000 - R$ 15.000", type: "CLT", posted: "5 horas atrás", description: "Gestão de projetos de tecnologia..." },
+    { id: 5, title: "Analista de Dados", company: "Data Corp", location: "São Paulo, SP", salary: "R$ 7.000 - R$ 10.000", type: "CLT", posted: "1 semana atrás", description: "Análise de dados e criação de dashboards..." },
+    { id: 6, title: "Product Manager", company: "Startup XYZ", location: "Remoto", salary: "R$ 12.000 - R$ 18.000", type: "PJ", posted: "3 dias atrás", description: "Gestão de produto digital..." },
+  ];
+
+  return (
+    <div className="min-h-screen bg-slate-950 pt-24 pb-16 px-4">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-8">Vagas Disponíveis</h1>
+        
+        {/* Filters */}
+        <div className="bg-slate-900 p-6 rounded-2xl border border-emerald-500/20 mb-8">
+          <div className="grid md:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="Cargo ou palavra-chave"
+                className="w-full bg-slate-800 text-white pl-10 pr-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+              />
+            </div>
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="Localização"
+                defaultValue={locationFilter}
+                className="w-full bg-slate-800 text-white pl-10 pr-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+              />
+            </div>
+            <select className="bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none">
+              <option>Tipo de contrato</option>
+              <option>CLT</option>
+              <option>PJ</option>
+              <option>Freelancer</option>
+            </select>
+            <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+              <Filter className="h-5 w-5" />
+              Filtrar
+            </button>
+          </div>
+        </div>
+
+        {/* Jobs List */}
+        <div className="grid gap-6">
+          {allJobs.map(job => (
+            <div key={job.id} className="bg-slate-900 p-6 rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition-all">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-xl font-semibold text-white">{job.title}</h3>
+                    <span className="text-emerald-400 font-semibold md:hidden">{job.salary}</span>
+                  </div>
+                  <p className="text-emerald-400 mb-2">{job.company}</p>
+                  <p className="text-gray-400 text-sm mb-4">{job.description}</p>
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" /> {job.location}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Briefcase className="h-4 w-4" /> {job.type}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" /> {job.posted}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-3 md:min-w-[200px]">
+                  <span className="text-emerald-400 font-semibold hidden md:block text-lg">{job.salary}</span>
+                  <div className="flex gap-2 w-full md:w-auto">
+                    <button className="flex-1 md:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                      Candidatar-se
+                    </button>
+                    <button className="p-2 border border-emerald-500/30 rounded-lg text-gray-400 hover:text-red-400 transition-colors">
+                      <Heart className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-center gap-2 mt-8">
+          <button className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors">Anterior</button>
+          <button className="px-4 py-2 bg-emerald-500 text-white rounded-lg">1</button>
+          <button className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors">2</button>
+          <button className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors">3</button>
+          <button className="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors">Próxima</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Empresas Page
+const Empresas = () => {
+  const companies = [
+    { id: 1, name: "Tech Solutions", sector: "Tecnologia", location: "São Paulo, SP", jobs: 12, logo: "TS" },
+    { id: 2, name: "Creative Agency", sector: "Marketing", location: "Rio de Janeiro, RJ", jobs: 5, logo: "CA" },
+    { id: 3, name: "E-commerce Brasil", sector: "Varejo", location: "Remoto", jobs: 8, logo: "EB" },
+    { id: 4, name: "Consultoria ABC", sector: "Consultoria", location: "Belo Horizonte, MG", jobs: 3, logo: "ABC" },
+    { id: 5, name: "Data Corp", sector: "Tecnologia", location: "São Paulo, SP", jobs: 15, logo: "DC" },
+    { id: 6, name: "Startup XYZ", sector: "Tecnologia", location: "Remoto", jobs: 6, logo: "XYZ" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-slate-950 pt-24 pb-16 px-4">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Empresas Parceiras</h1>
+        <p className="text-gray-400 mb-8">Conheça as empresas que estam contratando através da nossa plataforma</p>
+        
+        {/* Search */}
+        <div className="bg-slate-900 p-6 rounded-2xl border border-emerald-500/20 mb-8">
+          <div className="flex gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input 
+                type="text" 
+                placeholder="Buscar empresa..."
+                className="w-full bg-slate-800 text-white pl-10 pr-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+              />
+            </div>
+            <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold transition-colors">
+              Buscar
+            </button>
+          </div>
+        </div>
+
+        {/* Companies Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {companies.map(company => (
+            <div key={company.id} className="bg-slate-900 p-6 rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition-all group">
+              <div className="flex items-start justify-between mb-4">
+                <div className="w-16 h-16 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 font-bold text-xl">
+                  {company.logo}
+                </div>
+                <span className="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-sm font-medium">
+                  {company.jobs} vagas
+                </span>
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-1 group-hover:text-emerald-400 transition-colors">{company.name}</h3>
+              <p className="text-gray-400 text-sm mb-4">{company.sector}</p>
+              <div className="flex items-center gap-2 text-gray-400 text-sm mb-4">
+                <MapPin className="h-4 w-4" />
+                {company.location}
+              </div>
+              <button className="w-full bg-slate-800 hover:bg-emerald-500 hover:text-white text-emerald-400 py-2 rounded-lg font-medium transition-all">
+                Ver vagas
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Contato Page
+const Contato = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert('Mensagem enviada com sucesso!');
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 pt-24 pb-16 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-12">
+          {/* Contact Info */}
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-6">Fale Conosco</h1>
+            <p className="text-gray-400 mb-8">
+              Tem alguma dúvida ou sugestão? Entre em contato conosco. Nossa equipe está pronta para ajudar!
+            </p>
+            
+            <div className="space-y-6">
+              <div className="flex items-center gap-4 p-4 bg-slate-900 rounded-xl border border-emerald-500/20">
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                  <Phone className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">Telefone</p>
+                  <a href={`tel:${PHONE_NUMBER}`} className="text-white font-semibold hover:text-emerald-400 transition-colors">
+                    {PHONE_NUMBER}
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 bg-slate-900 rounded-xl border border-emerald-500/20">
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                  <MessageCircle className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">WhatsApp</p>
+                  <a href={`https://wa.me/${PHONE_WHATSAPP}`} target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-emerald-400 transition-colors">
+                    {PHONE_NUMBER}
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 bg-slate-900 rounded-xl border border-emerald-500/20">
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                  <Mail className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">E-mail</p>
+                  <a href="mailto:contato@meutrampo.com.br" className="text-white font-semibold hover:text-emerald-400 transition-colors">
+                    contato@meutrampo.com.br
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 bg-slate-900 rounded-xl border border-emerald-500/20">
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center">
+                  <Clock className="h-6 w-6 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">Horário de Atendimento</p>
+                  <p className="text-white font-semibold">Seg - Sex: 9h às 18h</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="bg-slate-900 p-8 rounded-2xl border border-emerald-500/20">
+            <h2 className="text-2xl font-bold text-white mb-6">Envie uma mensagem</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-gray-400 text-sm mb-2">Nome</label>
+                <input 
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                  placeholder="Seu nome completo"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-2">E-mail</label>
+                <input 
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                  placeholder="seu@email.com"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-2">Assunto</label>
+                <select 
+                  value={formData.subject}
+                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                  className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                  required
+                >
+                  <option value="">Selecione um assunto</option>
+                  <option value="suporte">Suporte Técnico</option>
+                  <option value="vagas">Dúvidas sobre Vagas</option>
+                  <option value="empresas">Para Empresas</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-2">Mensagem</label>
+                <textarea 
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  rows="4"
+                  className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none resize-none"
+                  placeholder="Digite sua mensagem..."
+                  required
+                ></textarea>
+              </div>
+              <button 
+                type="submit"
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+              >
+                <Send className="h-5 w-5" />
+                Enviar Mensagem
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Login Page
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert('Login realizado!');
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 pt-24 pb-16 px-4 flex items-center justify-center">
+      <div className="w-full max-w-md">
+        <div className="bg-slate-900 p-8 rounded-2xl border border-emerald-500/20">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-emerald-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <Briefcase className="h-8 w-8 text-emerald-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-white">Bem-vindo de volta</h1>
+            <p className="text-gray-400 mt-2">Entre na sua conta para continuar</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-gray-400 text-sm mb-2">E-mail</label>
+              <input 
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                placeholder="seu@email.com"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 text-sm mb-2">Senha</label>
+              <input 
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <label className="flex items-center gap-2 text-gray-400">
+                <input type="checkbox" className="rounded bg-slate-800 border-emerald-500/20" />
+                Lembrar-me
+              </label>
+              <Link to="/recuperar-senha" className="text-emerald-400 hover:text-emerald-300">
+                Esqueceu a senha?
+              </Link>
+            </div>
+            <button 
+              type="submit"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-semibold transition-colors"
+            >
+              Entrar
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-gray-400">
+              Ainda não tem conta?{' '}
+              <Link to="/register" className="text-emerald-400 hover:text-emerald-300 font-semibold">
+                Cadastre-se
+              </Link>
+            </p>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-emerald-500/20 text-center">
+            <p className="text-gray-400 text-sm mb-2">Precisa de ajuda?</p>
+            <a href={`tel:${PHONE_NUMBER}`} className="text-emerald-400 hover:text-emerald-300 font-medium">
+              {PHONE_NUMBER}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Register Page
+const Register = () => {
+  const [searchParams] = useSearchParams();
+  const type = searchParams.get('type') || 'candidate';
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+    companyName: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      alert('As senhas não coincidem!');
+      return;
+    }
+    alert('Cadastro realizado com sucesso!');
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 pt-24 pb-16 px-4 flex items-center justify-center">
+      <div className="w-full max-w-lg">
+        <div className="bg-slate-900 p-8 rounded-2xl border border-emerald-500/20">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-emerald-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+              {type === 'company' ? <Building2 className="h-8 w-8 text-emerald-400" /> : <User className="h-8 w-8 text-emerald-400" />}
+            </div>
+            <h1 className="text-2xl font-bold text-white">
+              {type === 'company' ? 'Cadastro de Empresa' : 'Criar Conta'}
+            </h1>
+            <p className="text-gray-400 mt-2">
+              {type === 'company' ? 'Publique vagas e encontre talentos' : 'Encontre as melhores oportunidades'}
+            </p>
+          </div>
+
+          {/* Type Selector */}
+          <div className="flex gap-2 mb-6 p-1 bg-slate-800 rounded-xl">
+            <Link 
+              to="/register?type=candidate"
+              className={`flex-1 py-2 px-4 rounded-lg text-center font-medium transition-colors ${type === 'candidate' ? 'bg-emerald-500 text-white' : 'text-gray-400 hover:text-white'}`}
+            >
+              Candidato
+            </Link>
+            <Link 
+              to="/register?type=company"
+              className={`flex-1 py-2 px-4 rounded-lg text-center font-medium transition-colors ${type === 'company' ? 'bg-emerald-500 text-white' : 'text-gray-400 hover:text-white'}`}
+            >
+              Empresa
+            </Link>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {type === 'company' ? (
+              <div>
+                <label className="block text-gray-400 text-sm mb-2">Nome da Empresa</label>
+                <input 
+                  type="text"
+                  value={formData.companyName}
+                  onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                  className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                  placeholder="Nome da empresa"
+                  required
+                />
+              </div>
+            ) : (
+              <div>
+                <label className="block text-gray-400 text-sm mb-2">Nome Completo</label>
+                <input 
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                  placeholder="Seu nome completo"
+                  required
+                />
+              </div>
+            )}
+            <div>
+              <label className="block text-gray-400 text-sm mb-2">E-mail</label>
+              <input 
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                placeholder="seu@email.com"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 text-sm mb-2">Telefone</label>
+              <input 
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                placeholder="(11) 99999-9999"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 text-sm mb-2">Senha</label>
+              <input 
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 text-sm mb-2">Confirmar Senha</label>
+              <input 
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                className="w-full bg-slate-800 text-white px-4 py-3 rounded-xl border border-emerald-500/20 focus:border-emerald-500 outline-none"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <input type="checkbox" className="rounded bg-slate-800 border-emerald-500/20" required />
+              <span>Concordo com os <Link to="/termos" className="text-emerald-400 hover:text-emerald-300">Termos de Uso</Link> e <Link to="/privacidade" className="text-emerald-400 hover:text-emerald-300">Política de Privacidade</Link></span>
+            </div>
+            <button 
+              type="submit"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-semibold transition-colors"
+            >
+              Criar Conta
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-gray-400">
+              Já tem conta?{' '}
+              <Link to="/login" className="text-emerald-400 hover:text-emerald-300 font-semibold">
+                Entrar
+              </Link>
+            </p>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-emerald-500/20 text-center">
+            <p className="text-gray-400 text-sm mb-2">Dúvidas sobre o cadastro?</p>
+            <a href={`tel:${PHONE_NUMBER}`} className="text-emerald-400 hover:text-emerald-300 font-medium">
+              {PHONE_NUMBER}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Main App Component
+function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <BrowserRouter>
+      <div className="min-h-screen bg-slate-950">
+        <Header isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/vagas" element={<Vagas />} />
+            <Route path="/empresas" element={<Empresas />} />
+            <Route path="/contato" element={<Contato />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </main>
+        <Footer />
+        <WhatsAppButton />
+      </div>
+    </BrowserRouter>
+  );
+}
+
+export default App;
